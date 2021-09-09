@@ -1,3 +1,4 @@
+
 const express = require('express');
 const cors = require('cors');
 
@@ -10,19 +11,67 @@ app.use(cors());
 const users = [];
 
 function checksExistsUserAccount(request, response, next) {
-  // Complete aqui
+  // Complete aqui - concluido
+  const { username } = request.headers;
+
+  const user = users.find((user)=> user.username === username);
+  if(!user){
+    return response.status(404).json({error : "user not exists!"})
+  }
+  request.user = user;
+  next();
+
+
 }
 
 function checksCreateTodosUserAvailability(request, response, next) {
-  // Complete aqui
+  // Complete aqui - concluido
+  const { user } = request;
+  
+  if(user.pro ==false && user.todos.length === 10){
+     return response.status(403).json({error:"Todo limit over!"}) 
+  }
+  next();
+
+   
+  
 }
 
 function checksTodoExists(request, response, next) {
   // Complete aqui
+  const { username } = request.headers;
+  const { id } = request.params;
+
+  const user = users.find((user)=>user.username === username);
+  // const userTodo = users.todos.find((user)=>user.id === id);
+  const validadeUuid = validate(id);
+
+  console.log(userTodo);
+
+  if(!user){
+    return response.status(404);
+  }else if(!validadeUuid){
+    return response.status(400);
+  }
+  
+  request.user = user;
+  next();
+
+
+
 }
 
 function findUserById(request, response, next) {
   // Complete aqui
+  const { id } = request.params;
+  const user = users.find((user)=>user.id === id);
+
+  if(!user){
+    return response.status(404);
+  }
+
+  request.user = user;
+  next();
 }
 
 app.post('/users', (request, response) => {
