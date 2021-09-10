@@ -42,19 +42,19 @@ function checksTodoExists(request, response, next) {
   const { username } = request.headers;
   const { id } = request.params;
 
-  const user = users.find((user)=>user.username === username);
-  // const userTodo = users.todos.find((user)=>user.id === id);
+  const user = users.find((user)=>user.username === username); 
   const validadeUuid = validate(id);
-
-  console.log(userTodo);
 
   if(!user){
     return response.status(404);
-  }else if(!validadeUuid){
+  }else if(!validadeUuid ){
     return response.status(400);
+  }else if(!user.todos.some(todo => todo.id = id)){
+    return response.status(404);
   }
-  
+
   request.user = user;
+  request.todo = user.todos.find(todo => todo.id = id);
   next();
 
 
@@ -62,7 +62,7 @@ function checksTodoExists(request, response, next) {
 }
 
 function findUserById(request, response, next) {
-  // Complete aqui
+  // Complete aqui - completo
   const { id } = request.params;
   const user = users.find((user)=>user.id === id);
 
