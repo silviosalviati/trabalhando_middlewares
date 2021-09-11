@@ -20,8 +20,6 @@ function checksExistsUserAccount(request, response, next) {
   }
   request.user = user;
   next();
-
-
 }
 
 function checksCreateTodosUserAvailability(request, response, next) {
@@ -32,33 +30,24 @@ function checksCreateTodosUserAvailability(request, response, next) {
      return response.status(403).json({error:"Todo limit over!"}) 
   }
   next();
-
-   
-  
 }
 
 function checksTodoExists(request, response, next) {
-  // Complete aqui
   const { username } = request.headers;
   const { id } = request.params;
-
+  
   const user = users.find((user)=>user.username === username); 
-  const validadeUuid = validate(id);
 
   if(!user){
-    return response.status(404);
-  }else if(!validadeUuid ){
-    return response.status(400);
+    return response.status(404).json({error: "Invalid user!"});
+  }else if(!validate(id) ){
+    return response.status(400).json({error: "Invalid id!"});
   }else if(!user.todos.some(todo => todo.id = id)){
-    return response.status(404);
+    return response.status(404).json({error: "Invalid Todo!"});
   }
-
   request.user = user;
   request.todo = user.todos.find(todo => todo.id = id);
   next();
-
-
-
 }
 
 function findUserById(request, response, next) {
@@ -149,9 +138,7 @@ app.put('/todos/:id', checksTodoExists, (request, response) => {
 
 app.patch('/todos/:id/done', checksTodoExists, (request, response) => {
   const { todo } = request;
-
   todo.done = true;
-
   return response.json(todo);
 });
 
